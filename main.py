@@ -1,18 +1,21 @@
-
+from xhtml2pdf import pisa             # import python module
+from google.cloud import storage
+import uuid
+import mysql.connector
+from mysql.connector import connect, Error
+import smtplib, ssl
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from email.utils import formataddr
+from google.cloud import firestore
+from email.mime.application import MIMEApplication
+import os
+import ast
+import io
+import json
 
 def gerar_pdf(request):
-    from xhtml2pdf import pisa             # import python module
-    from google.cloud import storage
-    import uuid
-    import mysql.connector
-    from mysql.connector import connect, Error
-    import smtplib, ssl
-    from email.mime.text import MIMEText
-    from email.mime.multipart import MIMEMultipart
-    from email.utils import formataddr
-
-    import os
-    import ast
+    
 
     # Importar secretos
     secretos = os.environ.get("secretos")
@@ -301,6 +304,8 @@ def gerar_pdf(request):
     file_name = str(uuid.uuid4())+".pdf"
     blob = bucket.blob(file_name)
 
+
+
     with blob.open("wb") as result_file:
         #f.write("teste")
         
@@ -316,6 +321,10 @@ def gerar_pdf(request):
 
 
 
+    
+    token_result = generateToken(file_name)
+    url_file = "https://us-west1-bogotatrabaja-hml.cloudfunctions.net/function-dialogflow-get-file?token="+token_result+"&namefile="+file_name
+
     jsonResponse = {
         "fulfillment_response": {
             "messages": [
@@ -329,7 +338,7 @@ def gerar_pdf(request):
                     "color": "#1E88E5",
                     "type": "article"
                     },
-                    "link": f"https://storage.googleapis.com/storage-hojadevida-hml/{file_name}",
+                    "link": url_file,
                     "type": "button"
                 }
                 ]
@@ -340,7 +349,7 @@ def gerar_pdf(request):
         }
         }
 
-
+    print(jsonResponse) 
     #REALIZA AS INSERÇÕES/EDIÇÕES NO BD
     session_id_int = int(session_id)
 
@@ -462,12 +471,25 @@ def gerar_pdf(request):
     message["From"] = formataddr((sender_name, sender_email))
     message["To"] = receiver
     message["Subject"] = "Hoja de vida - VCC"
+    
+    # AJUSTE ENVIO DE CORREO DE FORMA ASINCRONA
+
+    storage_client = storage.Client()
+    bucket = storage_client.bucket('storage-hojadevida-hml')
+    blob = bucket.blob(file_name)
+    stream = io.BytesIO()
+    blob.download_to_file(stream)
+    #
+    part = MIMEApplication(stream.getvalue(),Name=file_name)
+    part['Content-Disposition'] = 'attachment; filename="%s"' % file_name
+
 
     # Create another leaf part, which is also an instance of MIMEText.
     html_markup = f"""<h1 style="color: #02266C;">¡Hola, {nombre}!</h1> <p>Espero que te encuentres bien.</p> <p>Soy Chatico, tu asistente virtual de empleo.</p> <p>Abajo encontrarás el enlace a tu hoja de vida que generé para ti.</p> <p style="text-align: center; margin-top: 20px;"> <a href="{url}" style="display: inline-block; padding: 10px 20px; background-color: #02266C; color: #fff; text-decoration: none; font-weight: bold;">Hoja de vida resumida</a> </p> <p>Saludos cordiales,</p> <p>Chatico</p>"""
     # For this one, we need to change the type to `html`.
     mime_html = MIMEText(html_markup, "html")
     message.attach(mime_html)
+    message.attach(part)
 
     with smtplib.SMTP_SSL(
         host="smtp.gmail.com", port=465, context=ssl.create_default_context()
@@ -482,3 +504,13 @@ def gerar_pdf(request):
 
     
     return jsonResponse
+
+def generateToken(filename):
+    documentID=""
+    data = {"fileName": filename}
+    db = firestore.Client() 
+    #doc_ref = db.collection("curriv").document(documentID)    
+    #doc_ref.set(data)
+    update_time, doc_ref  = db.collection("curriv").add(data)      
+    documentID=doc_ref.id
+    return documentID
