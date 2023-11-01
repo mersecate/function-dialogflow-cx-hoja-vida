@@ -14,8 +14,13 @@ import ast
 import io
 import json
 
+import time
+
 def gerar_pdf(request):
     
+    start_time_total = time.time()
+    start_time = time.time()
+
 
     # Importar secretos
     secretos = os.environ.get("secretos")
@@ -32,6 +37,12 @@ def gerar_pdf(request):
     sessionInfo = request_json['sessionInfo'];
     parametrosSesion = sessionInfo['parameters'];
     ambiente = parametrosSesion['ambiente']
+
+    end_time = time.time()
+    print(f'Datos de Sesión: {end_time - start_time}')
+
+    start_time = time.time()
+
 
     notiene = ""
 
@@ -294,6 +305,12 @@ def gerar_pdf(request):
     # else:
     #     html_poblaciones = ""
 
+    end_time = time.time()
+
+    print(f'Datos de Experiencia Laboral: {end_time - start_time}')
+
+    start_time = time.time()
+
 
     #source_html = f"""<!DOCTYPE html><html lang="pt-br"><head> <title>Hoja de vida</title> <meta charset="utf-8"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&display=swap" rel="stylesheet"> <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet"></head><header> <div style="margin-top: 25px;"> <table style="width: 800px; padding: 0;"> <tr> <td style="width: 800px; padding: 0;"> <div style="padding-left: 30px; font-weight: 600; font-size: 16pt; color: #000000; font-family: 'PT Serif', serif;"><span>{nombre}</span></div> <div style="padding-left: 30px; margin-top: 5px; font-weight: 600; font-size: 16pt; color: #30539B;"><span>{cargo}</span></div> <div style="padding-left: 30px; margin-top:5px; padding-bottom: 5px;"> <div> <span>{email}</span> </div> <div> <span>{telefono}</span> </div> <div> <span>{ciudad}</span> </div> </td> </tr> </table> </div></header><body style="font-size: 14px; font-family: 'Barlow Semi Condensed', sans-serif; color: #4e4e4e; font-weight: 500; margin: 0;" > <div style="margin-left: 30px; padding-top: 10px;"> <table style="width: 800px; "> <tr> <td> <div style="border-bottom: solid 2px rgb(238, 199, 71); width: 800px;"> <h3 style="line-height: 1; padding-top: 10px; font-weight: 600; font-size: 16pt; color: #000000; font-family: 'PT Serif', serif;">EXPERIENCIA</h3> </div> </td> </tr> {html_experiencialaboral} {html_otra_experiencia} </table> <table style="width: 800px;"> <tr> <td> <div style="border-bottom: solid 2px rgb(238, 199, 71); padding-top: 10px; width: 800px;"> <h3 style="line-height: 1; padding-top: 15px; font-weight: 600; font-size: 16pt; color: #000000; font-family: 'PT Serif', serif;">EDUCACIÓN</h3> </div> </td> </tr> <tr> <td style="width: 800px;"> <div> <h3 style="line-height: 0; padding-top: 5px">{nivelestudiomasalto} - {nivelestudiomasalto_titulo}</h3> </div> <div><span style = "font-weight: 600; color: #30539B; font-size: 18px; line-height: 50px;">{nivelestudiomasalto_institucion}</span></div> <div style="padding-top: 5px;"> {nivelestudiomasalto_formacion} </div> </td> </tr> {html_formacionuniversitaria} </table> {html_perfil_profissional} <table style="width: 800px; "> <tr> <td> <div style="border-bottom: solid 2px rgb(238, 199, 71); width: 800px;"> <h3 style="line-height: 1; padding-top: 15px; font-weight: 600; font-size: 16pt; color: #000000; font-family: 'PT Serif', serif;">IDIOMA</h3> </div> </td> </tr> <tr> <td style = "padding-top: 5px;"> <div><span style = "font-weight: 600; color: #30539B; font-size: 18px; line-height: 50px;">Español</span></div> {html_idioma} </td> </tr> </table> {html_poblaciones} </div> <div style=" margin-left: 175px; padding-top: 30px;">Hoja de Vida generada por la Secretaría de Desarrollo Económico - Bogotá</div></body></html>"""
     source_html = f"""<!DOCTYPE html><html lang="pt-br"> <head> <title>Hoja de vida</title> <meta charset="utf-8"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&display=swap" rel="stylesheet"> <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet"> </head> <header> <div style="margin-top: 25px;"> <table style="width: 800px; padding: 0;"> <tr> <td style="width: 800px; padding: 0;"> <div style="padding-left: 30px; font-weight: 600; font-size: 16pt; color: #000000; font-family: 'PT Serif', serif;"><span>{nombre}</span></div> <div style="padding-left: 30px; margin-top: 5px; font-weight: 600; font-size: 16pt; color: #30539B;"><span>{cargo}</span></div> <div style="padding-left: 30px; margin-top:5px; padding-bottom: 5px;"> <div> <span>{email}</span> </div> <div> <span>{telefono}</span> </div> </td> </tr> </table> </div> </header> <body style="font-size: 14px; font-family: 'Barlow Semi Condensed', sans-serif; color: #4e4e4e; font-weight: 500; margin: 0;" > <div style="margin-left: 30px; padding-top: 10px;"> <table style="width: 800px; "> <tr> <td> <div style="border-bottom: solid 2px rgb(238, 199, 71); width: 800px;"> <h3 style="line-height: 1; padding-top: 10px; font-weight: 600; font-size: 16pt; color: #000000; font-family: 'PT Serif', serif;">EXPERIENCIA</h3> </div> </td> </tr> {html_experiencialaboral} </table> <table style="width: 800px;"> <tr> <td> <div style="border-bottom: solid 2px rgb(238, 199, 71); padding-top: 10px; width: 800px;"> <h3 style="line-height: 1; padding-top: 15px; font-weight: 600; font-size: 16pt; color: #000000; font-family: 'PT Serif', serif;">EDUCACIÓN</h3> </div> </td> </tr> <tr> <td style="width: 800px;"> <div> <h3 style="line-height: 0; padding-top: 5px">{nivelestudiomasalto} - {nivelestudiomasalto_titulo}</h3> </div> <div><span style = "font-weight: 600; color: #30539B; font-size: 18px; line-height: 50px;">{nivelestudiomasalto_institucion}</span></div> <div style="padding-top: 5px;"> {nivelestudiomasalto_formacion} </div> </td> </tr> </table> {html_perfil_profissional} </div> <div style=" margin-left: 175px; padding-top: 30px;">Hoja de Vida generada por la Secretaría de Desarrollo Económico - Bogotá</div> </body></html>"""
@@ -304,6 +321,11 @@ def gerar_pdf(request):
     file_name = str(uuid.uuid4())+".pdf"
     blob = bucket.blob(file_name)
 
+    end_time = time.time()
+
+    print(f'Datos de storage: {end_time - start_time}')
+
+    start_time = time.time()
 
 
     with blob.open("wb") as result_file:
@@ -319,7 +341,11 @@ def gerar_pdf(request):
     # close output file
         result_file.close()                 # close output file
 
+    end_time = time.time()
 
+    print(f'Escritura de pdf: {end_time - start_time}')
+
+    start_time = time.time()
 
     
     token_result = generateToken(file_name)
@@ -454,6 +480,12 @@ def gerar_pdf(request):
         except Exception as e:
             print('Error: '+str(e))
 
+    end_time = time.time()
+
+    print(f'Inserción en la base de datos: {end_time - start_time}')
+
+    start_time = time.time()
+
 
     #ENVIO DO EMAIL AO CANDIDATO:
     url = "https://storage.googleapis.com/storage-hojadevida-hml/"+str(file_name)
@@ -471,6 +503,13 @@ def gerar_pdf(request):
     message["From"] = formataddr((sender_name, sender_email))
     message["To"] = receiver
     message["Subject"] = "Hoja de vida - VCC"
+
+    end_time = time.time()
+
+    print(f'Preparación datos del correo: {end_time - start_time}')
+
+    start_time = time.time()
+
     
     # AJUSTE ENVIO DE CORREO DE FORMA ASINCRONA
 
@@ -482,6 +521,12 @@ def gerar_pdf(request):
     #
     part = MIMEApplication(stream.getvalue(),Name=file_name)
     part['Content-Disposition'] = 'attachment; filename="%s"' % file_name
+
+    end_time = time.time()
+
+    print(f'Preparación PDF para envío: {end_time - start_time}')
+
+    start_time = time.time()
 
 
     # Create another leaf part, which is also an instance of MIMEText.
@@ -502,8 +547,14 @@ def gerar_pdf(request):
             msg=message.as_string(),
         )
 
-    
+    end_time = time.time()
+
+    print(f'Envío PDF: {end_time - start_time}')
+    end_time_total = time.time()
+    print(f'Tiempo ejecución: {end_time_total - start_time_total}')
+
     return jsonResponse
+
 
 def generateToken(filename):
     documentID=""
@@ -514,3 +565,5 @@ def generateToken(filename):
     update_time, doc_ref  = db.collection("curriv").add(data)      
     documentID=doc_ref.id
     return documentID
+
+
