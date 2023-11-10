@@ -1,0 +1,17 @@
+steps:
+- name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
+  args:
+  - gcloud
+  - functions
+  - deploy
+  - function-dialogflow-cx-hoja-vida
+  - --region=us-west1
+  - --source=.
+  - --trigger-http
+  - --runtime=python39
+  - --entry-point=gerar_pdf
+  - --ingress-settings=all
+  - --vpc-connector=connector-vcc-cloud-run
+  - --egress-settings=all
+  - --min-instances=1
+  - --max-instances=10
