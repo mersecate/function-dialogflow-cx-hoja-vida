@@ -15,6 +15,9 @@ import io
 import json
 
 import time
+from google.cloud import functions_v1
+import asyncio
+
 
 def gerar_pdf(request):
     
@@ -87,46 +90,11 @@ def gerar_pdf(request):
         nivelestudiomasalto_institucion = notiene
 
     if parametrosSesion['nivelestudiomasalto_formacion']:
-        nivelestudiomasalto_formacion = str(int(round(parametrosSesion['nivelestudiomasalto_formacion'],0)))
+        # nivelestudiomasalto_formacion = str(int(round(parametrosSesion['nivelestudiomasalto_formacion'],0)))
+        nivelestudiomasalto_formacion = str(int(round(parametrosSesion['nivelestudiomasalto_formacion']['day'],0)))+"/"+str(int(round(parametrosSesion['nivelestudiomasalto_formacion']['month'],0)))+"/"+str(int(round(parametrosSesion['nivelestudiomasalto_formacion']['year'],0)))
+        nivelestudiomasalto_formacion_bd = str(int(round(parametrosSesion['nivelestudiomasalto_formacion']['year'],0)))+"-"+str(int(round(parametrosSesion['nivelestudiomasalto_formacion']['month'],0)))+"-"+str(int(round(parametrosSesion['nivelestudiomasalto_formacion']['day'],0)))
     else:
         nivelestudiomasalto_formacion = notiene
-
-    # try:
-    #     if parametrosSesion['formacionuniversitaria']:
-    #         formacionuniversitaria = parametrosSesion['formacionuniversitaria']
-    #     else:
-    #         formacionuniversitaria = notiene
-    # except:
-    #     formacionuniversitaria = notiene
-    #     pass
-
-    # try:
-    #     if parametrosSesion['formacionuniversitaria_titulo']:
-    #         formacionuniversitaria_titulo = parametrosSesion['formacionuniversitaria_titulo']
-    #     else:
-    #         formacionuniversitaria_titulo = notiene
-    # except:
-    #     formacionuniversitaria_titulo = notiene
-    #     pass
-
-    # try:
-    #     if parametrosSesion['formacionuniversitaria_institucion']:
-    #         formacionuniversitaria_institucion = parametrosSesion['formacionuniversitaria_institucion']
-    #     else:
-    #         formacionuniversitaria_institucion =notiene
-    # except:
-    #     formacionuniversitaria_institucion = notiene
-    #     pass
-
-    # try:
-    #     if parametrosSesion['formacionuniversitaria_formacion']:
-    #         formacionuniversitaria_formacion = parametrosSesion['formacionuniversitaria_formacion']
-    #     else:
-    #         formacionuniversitaria_formacion = notiene
-    # except:
-    #     formacionuniversitaria = notiene
-    #     pass
-
 
     if parametrosSesion['experiencialaboral']:
         experiencialaboral = parametrosSesion['experiencialaboral']
@@ -182,128 +150,20 @@ def gerar_pdf(request):
             experiencialaboral_logros = parametrosSesion['experiencialaboral_logros']
     else:
         experiencialaboral_logros = notiene
-
-
-    # if experiencialaboral == "No":
-    #     otra_experiencia = "No"
-    # else:
-    #     otra_experiencia = parametrosSesion['otra_experiencia']
-
-    # if otra_experiencia != "No":
-    #     experiencialaboral_empresa2 = parametrosSesion['experiencialaboral_empresa2']
-    # else:
-    #     experiencialaboral_empresa2 = notiene
-
-    # if otra_experiencia != "No":
-    #     experiencialaboral_puesto2 = parametrosSesion['experiencialaboral_puesto2']
-    # else:
-    #     experiencialaboral_puesto2 = notiene
-
-    # if otra_experiencia != "No":
-    #     experiencialaboral_fecha2 = str(int(round(parametrosSesion['experiencialaboral_fecha2']['day'],0)))+"/"+str(int(round(parametrosSesion['experiencialaboral_fecha2']['month'],0)))+"/"+str(int(round(parametrosSesion['experiencialaboral_fecha2']['year'],0)))
-    # else:
-    #     experiencialaboral_fecha2 = notiene
-
-    # if otra_experiencia != "No":
-    #     experiencialaboral_cese2 = str(int(round(parametrosSesion['experiencialaboral_cese2']['day'],0)))+"/"+str(int(round(parametrosSesion['experiencialaboral_cese2']['month'],0)))+"/"+str(int(round(parametrosSesion['experiencialaboral_cese2']['year'],0)))
-    # else:
-    #     experiencialaboral_cese2 = notiene
-
-    # if otra_experiencia == "No":
-    #     experiencialaboral_funciones2 = notiene
-    # else:
-    #     if parametrosSesion['experiencialaboral_funciones2'] == 'No quiero describir las funciones':
-    #         experiencialaboral_funciones2 = notiene
-    #     else:
-    #         experiencialaboral_funciones2 = parametrosSesion['experiencialaboral_funciones2']
-
-    # if otra_experiencia == "No":
-    #     experiencialaboral_logros2 =notiene
-    # else:
-    #     if parametrosSesion['experiencialaboral_logros2'] == 'No quiero describir los logros':
-    #         experiencialaboral_logros2 =notiene
-    #     else:
-    #         experiencialaboral_logros2 = parametrosSesion['experiencialaboral_logros2']
-
-    # try:
-    #     if parametrosSesion['idioma']:
-    #         idioma = parametrosSesion['idioma']
-    #     else:
-    #         idioma = notiene
-    # except:
-    #     idioma = notiene
-    #     pass
-
-    # if idioma == notiene:
-    #     nivel_idioma = notiene
-    # else:
-    #     nivel_idioma = parametrosSesion['nivel_idioma']
-
     if parametrosSesion['perfil_professional'] == "No quiero describir un perfil profesional":
         perfil_professional = notiene
     else:
         perfil_professional = parametrosSesion['perfil_professional']
         
-    # if parametrosSesion['poblaciones_vulnerables'] == "Yo no pertenezco a ninguna de estas poblaciones":
-    #     poblaciones_vulnerables =notiene
-    # else:
-    #     poblaciones_vulnerables = parametrosSesion['poblaciones_vulnerables']
-
-    # if parametrosSesion['poblaciones_etnicas'] == "No pertenezco a ninguna de estas poblaciones étnicas":
-    #     poblaciones_etnicas =notiene
-    # else:
-    #     poblaciones_etnicas = parametrosSesion['poblaciones_etnicas']
-        
-    # if parametrosSesion['poblaciones_discapacidad'] == "No tengo ningun tipo de discapacidad":
-    #     poblaciones_discapacidad = notiene 
-    # else:
-    #     poblaciones_discapacidad = parametrosSesion['poblaciones_discapacidad']
-
     if experiencialaboral == "No":
         html_experiencialaboral = ""
     else:
         html_experiencialaboral = f"""<tr> <td> <div> <h3 style="line-height: 0; padding-top: 5px;">{experiencialaboral_puesto}</h3> </div> <div style="padding-bottom: 3px;"><span style = "font-weight: 600; color: #30539B; font-size: 18px; line-height: 50px;" >{experiencialaboral_empresa}</span></div> <div style="display: flex;"> <span>{experiencialaboral_fecha} - {experiencialaboral_cese}</span> </div> <ul style="padding-bottom: 5px;"> <li> {experiencialaboral_funciones} </li> </ul> </td> </tr> <tr> <td> <div style = "border-top: dashed grey 1px; border-bottom: dashed grey 1px; padding-top: 10px; padding-bottom: 10px;"> <span>{experiencialaboral_logros}</span> </div> </td> </tr>"""
     
-    # if otra_experiencia == "Sí":
-    #     html_otra_experiencia = f"""<tr> <td> <div> <h3 style="line-height: 0; padding-top: 5px;">{experiencialaboral_puesto2}</h3> </div> <div style="padding-bottom: 3px;"><span style = "font-weight: 600; color: #30539B; font-size: 18px; line-height: 50px;" >{experiencialaboral_empresa2}</span></div> <div style="display: flex;"> <span>{experiencialaboral_fecha2} - {experiencialaboral_cese2}</span> </div> <ul style="padding-bottom: 5px;"> <li> {experiencialaboral_funciones2} </li> </ul> </td> </tr> <tr> <td> <div style ="border-top: dashed grey 1px; border-bottom: dashed grey 1px; padding-top: 10px; padding-bottom: 10px;"> <span>{experiencialaboral_logros2}</span> </div> </td> </tr>"""
-    # else:
-    #     html_otra_experiencia = ""
-
-    # if formacionuniversitaria == "Sí":
-    #     html_formacionuniversitaria = f"""<tr> <td style="width: 800px;"> <div> <h3 style="line-height: 0; padding-top: 5px">{formacionuniversitaria_titulo}</h3> </div> <div><span style = "font-weight: 600; color: #30539B; font-size: 18px; line-height: 50px;">{formacionuniversitaria_institucion}</span></div> <div style="padding-top: 5px;"> {formacionuniversitaria_formacion} </div> </td> </tr>"""
-    # else:
-    #     html_formacionuniversitaria = ""
-
-    # if idioma != notiene:
-    #     html_idioma = f"""<div><span style = "font-weight: 600; color: #30539B; font-size: 18px; line-height: 50px;">{idioma}</span></div> <div> <ul> <li>{nivel_idioma}</li> </ul> </div>"""
-    # else:
-    #     html_idioma = ""
-    
     if perfil_professional == notiene:
         html_perfil_profissional = ""
     else:
         html_perfil_profissional = f"""<table style="width: 800px;"> <tr> <td> <div style="border-bottom: solid 2px rgb(238, 199, 71); width: 800px;"> <h3 style="line-height: 1; padding-top: 15px; font-weight: 600; font-size: 16pt; color: #000000; font-family: 'PT Serif', serif;">PERFIL PROFESIONAL</h3> </div> </td> </tr> <tr> <td style = "padding-top: 5px;"> <span>{perfil_professional}</span> </td> </tr> </table>"""
-
-
-    # if poblaciones_vulnerables == notiene:
-    #     html_poblaciones_vulnerables = ""
-    # else:
-    #     html_poblaciones_vulnerables = f"""<ul> <li>{poblaciones_vulnerables}</li> </ul>"""
-
-    # if poblaciones_etnicas == notiene:
-    #     html_poblaciones_etnicas = ""
-    # else:
-    #     html_poblaciones_etnicas = f"""<ul> <li>{poblaciones_etnicas}</li> </ul>"""
-
-    # if poblaciones_discapacidad == notiene:
-    #     html_poblaciones_discapacidad = ""
-    # else:
-    #     html_poblaciones_discapacidad = f"""<ul> <li>{poblaciones_discapacidad}</li> </ul>"""
-
-    # if poblaciones_vulnerables != notiene or poblaciones_etnicas != notiene or poblaciones_discapacidad != notiene:
-    #     html_poblaciones = f"""<table style="width: 800px; "> <tr> <td> <div style="border-bottom: solid 2px rgb(238, 199, 71); width: 800px;"> <h3 style="line-height: 1; padding-top: 15px; font-weight: 600; font-size: 16pt; color: #000000; font-family: 'PT Serif', serif;">POBLACIÓN</h3> </div> </td> </tr> <tr> <td> <div style="padding-top: 5px;"> {html_poblaciones_vulnerables} {html_poblaciones_etnicas} {html_poblaciones_discapacidad} </div> </td> </tr> </table>"""
-    # else:
-    #     html_poblaciones = ""
 
     end_time = time.time()
 
@@ -311,13 +171,16 @@ def gerar_pdf(request):
 
     start_time = time.time()
 
+    source_html = f"""<!DOCTYPE html><html lang="pt-br"> <head> <title>Hoja de vida</title> <meta charset="utf-8"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&display=swap" rel="stylesheet"> <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet"> </head> <header> <div style="margin-top: 25px;"> <table style="width: 800px; padding: 0;"> <tr> <td style="width: 800px; padding: 0;"> <div style="padding-left: 30px; font-weight: 600; font-size: 16pt; color: #000000; font-family: 'PT Serif', serif;"><span>{nombre}</span></div> <div style="padding-left: 30px; margin-top: 5px; font-weight: 600; font-size: 16pt; color: #30539B;"><span>{cargo}</span></div> <div style="padding-left: 30px; margin-top:5px; padding-bottom: 5px;"> <div> <span>{email}</span> </div> <div> <span>{telefono}</span> </div> </td> </tr> </table> </div> </header> <body style="font-size: 14px; font-family: 'Barlow Semi Condensed', sans-serif; color: #4e4e4e; font-weight: 500; margin: 0;" > <div style="margin-left: 30px; padding-top: 10px;"> <table style="width: 800px; "> <tr> <td> <div style="border-bottom: solid 2px rgb(238, 199, 71); width: 800px;"> <h3 style="line-height: 1; padding-top: 10px; font-weight: 600; font-size: 16pt; color: #000000; font-family: 'PT Serif', serif;">EXPERIENCIA</h3> </div> </td> </tr> {html_experiencialaboral} </table> <table style="width: 800px;"> <tr> <td> <div style="border-bottom: solid 2px rgb(238, 199, 71); padding-top: 10px; width: 800px;"> <h3 style="line-height: 1; padding-top: 15px; font-weight: 600; font-size: 16pt; color: #000000; font-family: 'PT Serif', serif;">EDUCACIÓN</h3> </div> </td> </tr> <tr> <td style="width: 800px;"> <div> <h3 style="line-height: 0; padding-top: 5px">{nivelestudiomasalto} - {nivelestudiomasalto_titulo}</h3> </div> <div><span style = "font-weight: 600; color: #30539B; font-size: 18px; line-height: 50px;">{nivelestudiomasalto_institucion}</span></div> <div style="padding-top: 5px;"> {nivelestudiomasalto_formacion_bd} </div> </td> </tr> </table> {html_perfil_profissional} </div> <div style=" margin-left: 175px; padding-top: 30px;">Hoja de Vida generada por la Secretaría de Desarrollo Económico - Bogotá</div> </body></html>"""    
+    
+    if ambiente != "portal":
+        if ambiente == "HML":
+            bucket_name = "storage-hojadevida-hml"
+        elif ambiente == "PROD":
+            bucket_name = "storage-hojadevida-prod"
 
-    #source_html = f"""<!DOCTYPE html><html lang="pt-br"><head> <title>Hoja de vida</title> <meta charset="utf-8"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&display=swap" rel="stylesheet"> <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet"></head><header> <div style="margin-top: 25px;"> <table style="width: 800px; padding: 0;"> <tr> <td style="width: 800px; padding: 0;"> <div style="padding-left: 30px; font-weight: 600; font-size: 16pt; color: #000000; font-family: 'PT Serif', serif;"><span>{nombre}</span></div> <div style="padding-left: 30px; margin-top: 5px; font-weight: 600; font-size: 16pt; color: #30539B;"><span>{cargo}</span></div> <div style="padding-left: 30px; margin-top:5px; padding-bottom: 5px;"> <div> <span>{email}</span> </div> <div> <span>{telefono}</span> </div> <div> <span>{ciudad}</span> </div> </td> </tr> </table> </div></header><body style="font-size: 14px; font-family: 'Barlow Semi Condensed', sans-serif; color: #4e4e4e; font-weight: 500; margin: 0;" > <div style="margin-left: 30px; padding-top: 10px;"> <table style="width: 800px; "> <tr> <td> <div style="border-bottom: solid 2px rgb(238, 199, 71); width: 800px;"> <h3 style="line-height: 1; padding-top: 10px; font-weight: 600; font-size: 16pt; color: #000000; font-family: 'PT Serif', serif;">EXPERIENCIA</h3> </div> </td> </tr> {html_experiencialaboral} {html_otra_experiencia} </table> <table style="width: 800px;"> <tr> <td> <div style="border-bottom: solid 2px rgb(238, 199, 71); padding-top: 10px; width: 800px;"> <h3 style="line-height: 1; padding-top: 15px; font-weight: 600; font-size: 16pt; color: #000000; font-family: 'PT Serif', serif;">EDUCACIÓN</h3> </div> </td> </tr> <tr> <td style="width: 800px;"> <div> <h3 style="line-height: 0; padding-top: 5px">{nivelestudiomasalto} - {nivelestudiomasalto_titulo}</h3> </div> <div><span style = "font-weight: 600; color: #30539B; font-size: 18px; line-height: 50px;">{nivelestudiomasalto_institucion}</span></div> <div style="padding-top: 5px;"> {nivelestudiomasalto_formacion} </div> </td> </tr> {html_formacionuniversitaria} </table> {html_perfil_profissional} <table style="width: 800px; "> <tr> <td> <div style="border-bottom: solid 2px rgb(238, 199, 71); width: 800px;"> <h3 style="line-height: 1; padding-top: 15px; font-weight: 600; font-size: 16pt; color: #000000; font-family: 'PT Serif', serif;">IDIOMA</h3> </div> </td> </tr> <tr> <td style = "padding-top: 5px;"> <div><span style = "font-weight: 600; color: #30539B; font-size: 18px; line-height: 50px;">Español</span></div> {html_idioma} </td> </tr> </table> {html_poblaciones} </div> <div style=" margin-left: 175px; padding-top: 30px;">Hoja de Vida generada por la Secretaría de Desarrollo Económico - Bogotá</div></body></html>"""
-    source_html = f"""<!DOCTYPE html><html lang="pt-br"> <head> <title>Hoja de vida</title> <meta charset="utf-8"> <link rel="preconnect" href="https://fonts.googleapis.com"> <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin> <link href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&display=swap" rel="stylesheet"> <link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet"> </head> <header> <div style="margin-top: 25px;"> <table style="width: 800px; padding: 0;"> <tr> <td style="width: 800px; padding: 0;"> <div style="padding-left: 30px; font-weight: 600; font-size: 16pt; color: #000000; font-family: 'PT Serif', serif;"><span>{nombre}</span></div> <div style="padding-left: 30px; margin-top: 5px; font-weight: 600; font-size: 16pt; color: #30539B;"><span>{cargo}</span></div> <div style="padding-left: 30px; margin-top:5px; padding-bottom: 5px;"> <div> <span>{email}</span> </div> <div> <span>{telefono}</span> </div> </td> </tr> </table> </div> </header> <body style="font-size: 14px; font-family: 'Barlow Semi Condensed', sans-serif; color: #4e4e4e; font-weight: 500; margin: 0;" > <div style="margin-left: 30px; padding-top: 10px;"> <table style="width: 800px; "> <tr> <td> <div style="border-bottom: solid 2px rgb(238, 199, 71); width: 800px;"> <h3 style="line-height: 1; padding-top: 10px; font-weight: 600; font-size: 16pt; color: #000000; font-family: 'PT Serif', serif;">EXPERIENCIA</h3> </div> </td> </tr> {html_experiencialaboral} </table> <table style="width: 800px;"> <tr> <td> <div style="border-bottom: solid 2px rgb(238, 199, 71); padding-top: 10px; width: 800px;"> <h3 style="line-height: 1; padding-top: 15px; font-weight: 600; font-size: 16pt; color: #000000; font-family: 'PT Serif', serif;">EDUCACIÓN</h3> </div> </td> </tr> <tr> <td style="width: 800px;"> <div> <h3 style="line-height: 0; padding-top: 5px">{nivelestudiomasalto} - {nivelestudiomasalto_titulo}</h3> </div> <div><span style = "font-weight: 600; color: #30539B; font-size: 18px; line-height: 50px;">{nivelestudiomasalto_institucion}</span></div> <div style="padding-top: 5px;"> {nivelestudiomasalto_formacion} </div> </td> </tr> </table> {html_perfil_profissional} </div> <div style=" margin-left: 175px; padding-top: 30px;">Hoja de Vida generada por la Secretaría de Desarrollo Económico - Bogotá</div> </body></html>"""
-    
-    
     storage_client = storage.Client()
-    bucket = storage_client.bucket("storage-hojadevida-hml")
+    bucket = storage_client.bucket(bucket_name)
     file_name = str(uuid.uuid4())+".pdf"
     blob = bucket.blob(file_name)
 
@@ -329,9 +192,6 @@ def gerar_pdf(request):
 
 
     with blob.open("wb") as result_file:
-        #f.write("teste")
-        
-        #result_file = open(output_filename, "w+b")
 
         # convert HTML to PDF
         pisa_status = pisa.CreatePDF(
@@ -347,9 +207,15 @@ def gerar_pdf(request):
 
     start_time = time.time()
 
-    
     token_result = generateToken(file_name)
-    url_file = "https://us-west1-bogotatrabaja-hml.cloudfunctions.net/function-dialogflow-get-file?token="+token_result+"&namefile="+file_name
+
+    if ambiente != "portal":
+        if ambiente == "HML":
+            url_file = "https://us-west1-bogotatrabaja-hml.cloudfunctions.net/function-dialogflow-get-file?token="+token_result+"&namefile="+file_name
+        elif ambiente == "PROD":
+            url_file = "https://us-west1-bogotatrabaja-prd.cloudfunctions.net/function-dialogflow-get-file?token="+token_result+"&namefile="+file_name
+    
+
 
     jsonResponse = {
         "fulfillment_response": {
@@ -381,10 +247,6 @@ def gerar_pdf(request):
 
 
     if ambiente != "portal":
-        #if ambiente == "DEV":
-        #    host_conexao = "34.168.40.198"
-        #    print("Está em DEV ",host_conexao)
-        #    senha_conexao = os.environ.get("password_dev", "")
         if ambiente == "HML":
             host_conexao = secretos["dgflow_mysql_host_HML"]
             senha_conexao = secretos["dgflow_mysql_password_HML"]
@@ -404,11 +266,9 @@ def gerar_pdf(request):
                 db_update_complementos = f"UPDATE `agata-develop`.user_complemento SET celular = '{telefono}', cargo= '{cargo}' WHERE id_users='{session_id}'"  
                 with connection.cursor() as cursor:
                     cursor.execute(db_update_complementos)
-                    connection.commit()
-                    
+                    connection.commit()               
                 
                 #VERIFICAÇÃO SE USUÁRIO JÁ INICIOU UM CURRÍCULO, CASO NÃO TENHA INICIADO, INICIA UMA INSTÂNCIA DE CURRÍCULO:
-                #db_tem_curriculo = f"SELECT * FROM `agata-develop`.user_curriculo WHERE id_users='{session_id}'"  
                 db_tem_curriculo = f"SELECT * FROM `agata-develop`.user_curriculo WHERE id_users=%s"
                 with connection.cursor() as cursor:
                     cursor.execute(db_tem_curriculo, (session_id,))
@@ -459,7 +319,7 @@ def gerar_pdf(request):
                    db_insere_nivel_educativo = f"""INSERT INTO `agata-develop`.curriculo_nivel_educativo (id_user_curriculo, interessadoPractica, nivelEducativo, 
                        tituloObtenido, tituloHomologado, areaDesempeno,
                        nucleoConocimiento, Institucion, paisDelCurso, estadoDelCurso,
-                       fechafinalizacion, idObservaciones) VALUES ({id_curriculo}, 0, '{nivelestudiomasalto}', '{nivelestudiomasalto_titulo}', '', '', '', '{nivelestudiomasalto_institucion}', '', '', '{nivelestudiomasalto_formacion}', '')"""
+                       fechafinalizacion, idObservaciones) VALUES ({id_curriculo}, 0, '{nivelestudiomasalto}', '{nivelestudiomasalto_titulo}', '', '', '', '{nivelestudiomasalto_institucion}', '', '', '{nivelestudiomasalto_formacion_bd}', '')"""
                    cursor.execute(db_insere_nivel_educativo)
                    connection.commit()
                 print("Nivel educativo atualizado")
@@ -487,65 +347,21 @@ def gerar_pdf(request):
     start_time = time.time()
 
 
+
     #ENVIO DO EMAIL AO CANDIDATO:
-    url = "https://storage.googleapis.com/storage-hojadevida-hml/"+str(file_name)
-    sender_name = "Bogotá Trabaja"
-    sender_email = "proyectoempleo@desarrolloeconomico.gov.co"
-
-    receiver = email
-    password = secretos["dgflow_email_password"]
-
-    # Create an instance of MIMEMultipart which can include multiple parts.
-    # `alternative` means only one part will be shown and it's last in first out.
-    message = MIMEMultipart("alternative")
-
-    # The headers should be set to the root MIMEMultipart instance.
-    message["From"] = formataddr((sender_name, sender_email))
-    message["To"] = receiver
-    message["Subject"] = "Hoja de vida - VCC"
-
-    end_time = time.time()
-
-    print(f'Preparación datos del correo: {end_time - start_time}')
-
-    start_time = time.time()
-
-    
-    # AJUSTE ENVIO DE CORREO DE FORMA ASINCRONA
-
-    storage_client = storage.Client()
-    bucket = storage_client.bucket('storage-hojadevida-hml')
-    blob = bucket.blob(file_name)
-    stream = io.BytesIO()
-    blob.download_to_file(stream)
-    #
-    part = MIMEApplication(stream.getvalue(),Name=file_name)
-    part['Content-Disposition'] = 'attachment; filename="%s"' % file_name
-
-    end_time = time.time()
-
-    print(f'Preparación PDF para envío: {end_time - start_time}')
-
-    start_time = time.time()
+    if ambiente != "portal":
+        if ambiente == "HML":
+            function_name = "projects/bogotatrabaja-hml/locations/us-west1/functions/function-dialogflow-cx-send-email"
+            bucket_name = "storage-hojadevida-hml"
+        elif ambiente == "PROD":
+            function_name = "projects/bogotatrabaja-prd/locations/us-west1/functions/function-dialogflow-cx-send-email"
+            bucket_name = "storage-hojadevida-prod"
 
 
-    # Create another leaf part, which is also an instance of MIMEText.
-    html_markup = f"""<h1 style="color: #02266C;">¡Hola, {nombre}!</h1> <p>Espero que te encuentres bien.</p> <p>Soy Chatico, tu asistente virtual de empleo.</p> <p>Abajo encontrarás el enlace a tu hoja de vida que generé para ti.</p> <p style="text-align: center; margin-top: 20px;"> <a href="{url}" style="display: inline-block; padding: 10px 20px; background-color: #02266C; color: #fff; text-decoration: none; font-weight: bold;">Hoja de vida resumida</a> </p> <p>Saludos cordiales,</p> <p>Chatico</p>"""
-    # For this one, we need to change the type to `html`.
-    mime_html = MIMEText(html_markup, "html")
-    message.attach(mime_html)
-    message.attach(part)
+    mail_request = {"email" : email, "nombre" : nombre, "file_name" : str(file_name), "bucket_name" : bucket_name}
+    print(f"mail_request: {mail_request}")
 
-    with smtplib.SMTP_SSL(
-        host="smtp.gmail.com", port=465, context=ssl.create_default_context()
-    ) as server:
-        server.login(sender_email, password)
-
-        server.sendmail(
-            from_addr=sender_email,
-            to_addrs=receiver,
-            msg=message.as_string(),
-        )
+    asyncio.run(send_mail(function_name, mail_request))
 
     end_time = time.time()
 
@@ -567,3 +383,18 @@ def generateToken(filename):
     return documentID
 
 
+async def send_mail(name, request):
+    # Create a client
+    client = functions_v1.CloudFunctionsServiceAsyncClient()
+
+    # Initialize request argument(s)
+    request = functions_v1.CallFunctionRequest(
+        name=name,
+        data=json.dumps(request),
+    )
+
+    # Make the request
+    response = await client.call_function(request=request)
+
+    # Handle the response
+    print(f"function response: {response}")
