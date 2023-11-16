@@ -83,7 +83,7 @@ def create_json_response(url_file):
                         "richContent": [
                             [
                                 {
-                                    "text": "Resume",
+                                    "text": "Hoja de vida",
                                     "icon": {
                                         "color": "#1E88E5",
                                         "type": "article"
