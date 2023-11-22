@@ -10,7 +10,7 @@ steps:
   - --trigger-http
   - --runtime=python39
   - --entry-point=gerar_pdf
-  - --ingress-settings=all
+  - --ingress-settings=internal-and-gclb
   - --vpc-connector=connector-vcc-cloud-run
   - --egress-settings=all
   - --min-instances=1
