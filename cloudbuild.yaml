@@ -11,7 +11,7 @@ steps:
   - --runtime=python39
   - --entry-point=gerar_pdf
   - --ingress-settings=internal-and-gclb
-  - --vpc-connector=connector-vcc-cloud-run
+  - --vpc-connector=de-conector-dev
   - --egress-settings=all
   - --min-instances=1
   - --max-instances=10
