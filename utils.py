@@ -57,7 +57,7 @@ def generate_file_url(ambiente, file_name):
     if ambiente == "HML":
         base_url = "https://vcc.agatadata.net/function-dialogflow-get-file"
     elif ambiente == "PROD":
-        base_url = "https://us-west1-bogotatrabaja-prd.cloudfunctions.net/function-dialogflow-get-file"
+        base_url = "https://serverless.desarrolloeconomico.gov.co/function-dialogflow-get-file"
     else:
         raise ValueError("Invalid environment")
 
