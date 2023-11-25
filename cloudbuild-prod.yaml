@@ -11,7 +11,7 @@ steps:
   - --runtime=python39
   - --entry-point=gerar_pdf
   - --ingress-settings=internal-and-gclb
-  - --vpc-connector=projects/re-red-prd/locations/us-west1/connectors/de-prd-conector-sv
+  - --vpc-connector=projects/de-red-prd/locations/us-west1/connectors/de-prd-conector-sv
   - --egress-settings=all
   - --min-instances=1
   - --max-instances=10
