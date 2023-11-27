@@ -77,3 +77,6 @@ The function relies on the following environment variables:
 4. The function will generate a PDF, upload it to the specified Cloud Storage bucket, and send an email with the PDF attachment. It will also update relevant information in the MySQL database.
 
 Note: Adjust the JSON request according to your data structure and requirements.
+
+
+
