@@ -6,9 +6,22 @@ from mysql.connector import connect
 
 from utils import *
 
-# Function to generate a PDF document based on input data
-def gerar_pdf(request):
-    # Retrieve secrets from environment variables
+def gerar_pdf(request):6
+    """
+    Generates a PDF document based on input data retrieved from the request.
+
+    Parameters:
+    - request_data (str): Input data containing information necessary for PDF generation.
+
+    Returns:
+    str: A response indicating the successful creation of the PDF document.
+
+    Raises:
+    DatabaseConnectionError: If there is an issue connecting to the database.
+    QueryExecutionError: If an error occurs while executing the database query.
+    PDFGenerationError: If there is an issue generating the PDF document.
+	"""
+  # Retrieve secrets from environment variables
     secretos = os.environ.get("secretos")
     secretos = ast.literal_eval(secretos)
 
@@ -34,108 +47,134 @@ def gerar_pdf(request):
         function_name = "projects/bogotatrabaja-prd/locations/us-west1/functions/function-dialogflow-cx-send-email"
         bucket_name = "storage-hojadevida-prod"
 
-    # Extracting user information from the request parameters
+        # Extracting user information from the request parameters
+
+    # Initializing a default value
     notiene = ""
 
+    # Extracting 'nombre' from parametrosSesion or assigning the default value
     if parametrosSesion['nombre']:
         nombre = parametrosSesion['nombre']
     else:
-        nombre=notiene
+        nombre = notiene
 
+    # Extracting 'cargo' from parametrosSesion or assigning the default value
     if parametrosSesion['cargo']:
         cargo = parametrosSesion['cargo']
     else:
         cargo = notiene
 
+    # Extracting 'email' from parametrosSesion or assigning the default value
     if parametrosSesion['email']:
         email = parametrosSesion['email']
     else:
         email = notiene
 
+    # Extracting 'telefono' from parametrosSesion or assigning the default value
     if parametrosSesion['telefono']:
         telefono = parametrosSesion['telefono']
     else:
         telefono = notiene
 
+    # Extracting 'nivelestudiomasalto' from parametrosSesion or assigning the default value
     if parametrosSesion['nivelestudiomasalto']:
         nivelestudiomasalto = parametrosSesion['nivelestudiomasalto']
     else:
         nivelestudiomasalto = notiene
 
+    # Extracting 'nivelestudiomasalto_titulo' from parametrosSesion or assigning the default value
     if parametrosSesion['nivelestudiomasalto_titulo']:
         nivelestudiomasalto_titulo = parametrosSesion['nivelestudiomasalto_titulo']
     else:
         nivelestudiomasalto_titulo = notiene
 
+    # Extracting 'nivelestudiomasalto_institucion' from parametrosSesion or assigning the default value
     if parametrosSesion['nivelestudiomasalto_institucion']:
         nivelestudiomasalto_institucion = parametrosSesion['nivelestudiomasalto_institucion']
     else:
         nivelestudiomasalto_institucion = notiene
 
+    # Extracting 'nivelestudiomasalto_formacion' from parametrosSesion or assigning the default value
     if parametrosSesion['nivelestudiomasalto_formacion']:
-        nivelestudiomasalto_formacion = str(int(round(parametrosSesion['nivelestudiomasalto_formacion']['day'],0)))+"/"+str(int(round(parametrosSesion['nivelestudiomasalto_formacion']['month'],0)))+"/"+str(int(round(parametrosSesion['nivelestudiomasalto_formacion']['year'],0)))
-        nivelestudiomasalto_formacion_bd = str(int(round(parametrosSesion['nivelestudiomasalto_formacion']['year'],0)))+"-"+str(int(round(parametrosSesion['nivelestudiomasalto_formacion']['month'],0)))+"-"+str(int(round(parametrosSesion['nivelestudiomasalto_formacion']['day'],0)))
+        nivelestudiomasalto_formacion = str(int(round(parametrosSesion['nivelestudiomasalto_formacion']['day'],0))) + "/" + \
+                                        str(int(round(parametrosSesion['nivelestudiomasalto_formacion']['month'],0))) + "/" + \
+                                        str(int(round(parametrosSesion['nivelestudiomasalto_formacion']['year'],0)))
+        nivelestudiomasalto_formacion_bd = str(int(round(parametrosSesion['nivelestudiomasalto_formacion']['year'],0))) + "-" + \
+                                           str(int(round(parametrosSesion['nivelestudiomasalto_formacion']['month'],0))) + "-" + \
+                                           str(int(round(parametrosSesion['nivelestudiomasalto_formacion']['day'],0)))
     else:
         nivelestudiomasalto_formacion = notiene
 
+    # Extracting 'experiencialaboral' from parametrosSesion or assigning the default value
     if parametrosSesion['experiencialaboral']:
         experiencialaboral = parametrosSesion['experiencialaboral']
     else:
         experiencialaboral = notiene
 
+    # Handling additional information if 'experiencialaboral' is not "No"
     if experiencialaboral != "No":
-        experiencialaboral_empresa = parametrosSesion['experiencialaboral_empresa']
-    else:
-        experiencialaboral_empresa = notiene
+        # Extracting 'experiencialaboral_empresa' or assigning the default value
+        experiencialaboral_empresa = parametrosSesion['experiencialaboral_empresa'] if experiencialaboral != "No" else notiene
 
-    if experiencialaboral != "No":
-        experiencialaboral_puesto = parametrosSesion['experiencialaboral_puesto']
-    else:
-        experiencialaboral_puesto = notiene
+        # Extracting 'experiencialaboral_puesto' or assigning the default value
+        experiencialaboral_puesto = parametrosSesion['experiencialaboral_puesto'] if experiencialaboral != "No" else notiene
 
-    if experiencialaboral != "No":
-        experiencialaboral_fecha = str(int(round(parametrosSesion['experiencialaboral_fecha']['day'],0)))+"/"+str(int(round(parametrosSesion['experiencialaboral_fecha']['month'],0)))+"/"+str(int(round(parametrosSesion['experiencialaboral_fecha']['year'],0)))
-        experiencialaboral_fecha_bd = str(int(round(parametrosSesion['experiencialaboral_fecha']['year'],0)))+"-"+str(int(round(parametrosSesion['experiencialaboral_fecha']['month'],0)))+"-"+str(int(round(parametrosSesion['experiencialaboral_fecha']['day'],0)))
-    else:
-        experiencialaboral_fecha =notiene
-        
-    if experiencialaboral != "No": 
-        experiencialaboral_actualidad = parametrosSesion['experiencialaboral_actualidad']
-    else:
-        experiencialaboral_actualidad =notiene
+        # Extracting 'experiencialaboral_fecha' and formatting it or assigning the default value
+        experiencialaboral_fecha = (str(int(round(parametrosSesion['experiencialaboral_fecha']['day'],0))) + "/" +
+                                    str(int(round(parametrosSesion['experiencialaboral_fecha']['month'],0))) + "/" +
+                                    str(int(round(parametrosSesion['experiencialaboral_fecha']['year'],0)))) \
+                                    if experiencialaboral != "No" else notiene
 
-    if experiencialaboral != "No": 
+        # Formatting 'experiencialaboral_fecha' for database storage
+        experiencialaboral_fecha_bd = (str(int(round(parametrosSesion['experiencialaboral_fecha']['year'],0))) + "-" +
+                                       str(int(round(parametrosSesion['experiencialaboral_fecha']['month'],0))) + "-" +
+                                       str(int(round(parametrosSesion['experiencialaboral_fecha']['day'],0)))) \
+                                       if experiencialaboral != "No" else notiene
+
+        # Extracting 'experiencialaboral_actualidad' or assigning the default value
+        experiencialaboral_actualidad = parametrosSesion['experiencialaboral_actualidad'] if experiencialaboral != "No" else notiene
+
+        # Handling the case where 'experiencialaboral_actualidad' is "Sí"
         if experiencialaboral_actualidad == "Sí":
             experiencialaboral_cese = "Actualidad"
             experiencialaboral_cese_bd = ""
             trabajandoMismoTrabajo = 1
         else:
             trabajandoMismoTrabajo = 0
-            experiencialaboral_cese = str(int(round(parametrosSesion['experiencialaboral_cese']['day'],0)))+"/"+str(int(round(parametrosSesion['experiencialaboral_cese']['month'],0)))+"/"+str(int(round(parametrosSesion['experiencialaboral_cese']['year'],0)))
-            experiencialaboral_cese_bd = str(int(round(parametrosSesion['experiencialaboral_cese']['year'],0)))+"-"+str(int(round(parametrosSesion['experiencialaboral_cese']['month'],0)))+"-"+str(int(round(parametrosSesion['experiencialaboral_cese']['day'],0)))
-    else:
-        experiencialaboral_cese = notiene
+            # Extracting 'experiencialaboral_cese' and formatting it or assigning the default value
+            experiencialaboral_cese = (str(int(round(parametrosSesion['experiencialaboral_cese']['day'],0))) + "/" +
+                                       str(int(round(parametrosSesion['experiencialaboral_cese']['month'],0))) + "/" +
+                                       str(int(round(parametrosSesion['experiencialaboral_cese']['year'],0)))) \
+                                       if experiencialaboral != "No" else notiene
 
+            # Formatting 'experiencialaboral_cese' for database storage
+            experiencialaboral_cese_bd = (str(int(round(parametrosSesion['experiencialaboral_cese']['year'],0))) + "-" +
+                                          str(int(round(parametrosSesion['experiencialaboral_cese']['month'],0))) + "-" +
+                                          str(int(round(parametrosSesion['experiencialaboral_cese']['day'],0)))) \
+                                          if experiencialaboral != "No" else notiene
+
+    # Extracting 'experiencialaboral_funciones' or assigning the default value
     if experiencialaboral != "No":
-        if parametrosSesion['experiencialaboral_funciones'] == 'No quiero describir las funciones':
-            experiencialaboral_funciones = notiene
-        else:
-            experiencialaboral_funciones = parametrosSesion['experiencialaboral_funciones']
+        experiencialaboral_funciones = parametrosSesion['experiencialaboral_funciones'] \
+                                      if parametrosSesion['experiencialaboral_funciones'] != 'No quiero describir las funciones' \
+                                      else notiene
     else:
         experiencialaboral_funciones = notiene
 
+    # Extracting 'experiencialaboral_logros' or assigning the default value
     if experiencialaboral != "No":
-        if parametrosSesion['experiencialaboral_logros'] == 'No quiero describir los logros':
-            experiencialaboral_logros = notiene
-        else:
-            experiencialaboral_logros = parametrosSesion['experiencialaboral_logros']
+        experiencialaboral_logros = parametrosSesion['experiencialaboral_logros'] \
+                                   if parametrosSesion['experiencialaboral_logros'] != 'No quiero describir los logros' \
+                                   else notiene
     else:
         experiencialaboral_logros = notiene
+
+    # Extracting 'perfil_professional' or assigning the default value
     if parametrosSesion['perfil_professional'] == "No quiero describir un perfil profesional":
         perfil_professional = notiene
     else:
         perfil_professional = parametrosSesion['perfil_professional']
-        
+
     if experiencialaboral == "No":
         html_experiencialaboral = ""
     else:
@@ -248,7 +287,7 @@ def gerar_pdf(request):
                 
                 if experiencialaboral != "No":
                     experiencialaboral_funciones_logros = experiencialaboral_funciones+" "+experiencialaboral_logros
-                    #INSERE NA BASE DE DATOS LA INFOMACIÓN DE EXPERIENCIA LABORAL
+                    #INSERT WORK EXPERIENCE INFORMATION IN THE DATABASE
                     with connection.cursor() as cursor:
                         db_insere_experiencia_laboral = f"""INSERT INTO `agata-develop`.curriculo_experiencia_laboral (id_user_curriculo, funcionesLogros, tpExperienciaLaboral,
                         productoServicio, cuaPersonasTrabajan, sector, cargo,
@@ -263,5 +302,3 @@ def gerar_pdf(request):
             print('Error: '+str(e))
 
     return jsonResponse
-
-
