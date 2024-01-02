@@ -6,7 +6,7 @@ from mysql.connector import connect
 
 from utils import *
 
-def gerar_pdf(request):6
+def gerar_pdf(request):
     """
     Generates a PDF document based on input data retrieved from the request.
 
