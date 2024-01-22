@@ -7,6 +7,7 @@ from mysql.connector import connect
 from utils import *
 
 def gerar_pdf(request):
+    
     """
     Generates a PDF document based on input data retrieved from the request.
 
@@ -46,6 +47,9 @@ def gerar_pdf(request):
     elif ambiente == "PROD":
         function_name = "projects/bogotatrabaja-prd/locations/us-west1/functions/function-dialogflow-cx-send-email"
         bucket_name = "storage-hojadevida-prod"
+    elif ambiente == "QA":
+        function_name = "projects/bogotatrabaja-qa/locations/us-west1/functions/function-dialogflow-cx-send-email"
+        bucket_name = "storage-hojadevida-qa"    
 
         # Extracting user information from the request parameters
 
@@ -215,6 +219,11 @@ def gerar_pdf(request):
             host_conexao = secretos["dgflow_mysql_host_PROD"]
             senha_conexao = secretos["dgflow_mysql_password_PROD"]
             print("It's in PROD ",host_conexao)
+
+        elif ambiente == "QA":
+            host_conexao = secretos["dgflow_mysql_host_QA"]
+            senha_conexao = secretos["dgflow_mysql_password_QA"]
+            print("It's in QA",host_conexao)    
 
         # Try connecting to the database and performing updates/inserts
         try:
