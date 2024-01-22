@@ -46,7 +46,7 @@ def generate_file_url(ambiente, file_name):
     Generate a file URL based on the environment and file information.
 
     Args:
-        ambiente (str): The environment ("HML" or "PROD").
+        ambiente (str): The environment ("HML" or "PROD" or "QA").
         file_name (str): The name of the file.
 
     Returns:
@@ -58,6 +58,8 @@ def generate_file_url(ambiente, file_name):
         base_url = "https://vcc.agatadata.net/function-dialogflow-get-file"
     elif ambiente == "PROD":
         base_url = "https://serverless.desarrolloeconomico.gov.co/function-dialogflow-get-file"
+    elif ambiente == "QA":
+        base_url = "https://vccqa.agatadata.net/function-dialogflow-get-file"    
     else:
         raise ValueError("Invalid environment")
 
